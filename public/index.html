@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO chat</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+  <button id="pingButton">PING</button>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="input" autocomplete="off"><button>Send</button>
+  </form>
+
+  <script>
+    var socket = io();
+    var messages = document.getElementById('messages');
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+    document.getElementById('pingButton')
+
+    .addEventListener('click', () => {
+      socket.emit('ping', {name: "a user"});
+    });
+
+    socket.on("pong", (data) => {
+      const resp = console.log("Have you had more than ", data.coffees, " coffees today?");     
+      console.log(`%c Server Response`, "font-size: 20px; font-weight: bold; color: #007200");
+    });
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', function(msg) {
+      var item = document.createElement('li');
+      item.textContent = msg;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+  </script>
+
+</body>
+</html>
